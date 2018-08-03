@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>CP.Repository</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>Mubarak Imam</Authors>
+    <Company>EduTech LLC</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.1" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!-- <GeneratePackageOnBuild>true</GeneratePackageOnBuild> -->
+
+</Project>
