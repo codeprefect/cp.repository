@@ -29,6 +29,6 @@ namespace CP.Repositories.Interfaces
         void DeleteRange<TEntity>(IEnumerable<TEntity> entity, string deletedBy = null)
         where TEntity : class, IEntity;
 
-        Task SaveAsync();
+        Task<int> SaveAsync();
     }
 }

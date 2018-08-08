@@ -35,7 +35,7 @@ namespace CP.Repositories.Interfaces
             string includeProperties = null)
             where TEntity : class, IEntity;
 
-        Task<TEntity> GetByIdAsync<TEntity>(object id)
+        Task<TEntity> GetByIdAsync<TEntity, Tin>(Tin id)
             where TEntity : class, IEntity;
 
         Task<int> GetCountAsync<TEntity>(Expression<Func<TEntity, bool>> filter = null)

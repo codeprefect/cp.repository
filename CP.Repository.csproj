@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>CP.Repository</PackageId>
-    <Version>0.0.1</Version>
+    <Version>0.0.3</Version>
     <Authors>Mubarak Imam</Authors>
     <Company>EduTech LLC</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -14,6 +14,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.1" PrivateAssets="All" />
   </ItemGroup>
 
-  <!-- <GeneratePackageOnBuild>true</GeneratePackageOnBuild> -->
+  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
 </Project>

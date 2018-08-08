@@ -83,7 +83,7 @@ namespace CP.Repositories
             return await GetQueryable<TEntity>(filter, orderBy, includeProperties).FirstOrDefaultAsync();
         }
 
-        public virtual Task<TEntity> GetByIdAsync<TEntity>(object id)
+        public virtual Task<TEntity> GetByIdAsync<TEntity, Tin>(Tin id)
         where TEntity : class, IEntity
         {
             return _context.Set<TEntity>().FindAsync(id);
