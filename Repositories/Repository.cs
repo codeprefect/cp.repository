@@ -1,46 +1,92 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CP.Entities.Interfaces;
 using CP.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace CP.Repositories {
-    public class Repository<TContext> : ReadOnlyRepository<TContext>, IRepository<TContext> where TContext : DbContext {
-        public Repository (TContext context) : base (context) { }
+namespace CP.Repositories
+{
+    public class Repository<TContext> : ReadOnlyRepository<TContext>, IRepository<TContext> where TContext : DbContext
+    {
+        public Repository(TContext context) : base(context) { }
 
-        public virtual TEntity Create<TEntity> (TEntity entity, string createdBy = null) where TEntity : class, IEntity {
+        public virtual TEntity Add<TEntity>(TEntity entity, string createdBy = null) where TEntity : class, IEntity
+        {
             entity.CreatedDate = DateTime.UtcNow;
             entity.CreatedBy = createdBy;
-            _context.Set<TEntity> ().Add (entity);
+            _context.Set<TEntity>().Add(entity);
             return entity;
         }
 
-        public virtual TEntity Update<TEntity> (TEntity entity, string modifiedBy = null) where TEntity : class, IEntity {
+        public virtual IEnumerable<TEntity> AddRange<TEntity>(IEnumerable<TEntity> entities, string createdBy = null) where TEntity : class, IEntity
+        {
+            IList<TEntity> list = new List<TEntity>();
+            foreach (var entity in entities)
+            {
+                list.Add(Add(entity, createdBy));
+            }
+            return list;
+        }
+
+        public virtual TEntity Update<TEntity>(TEntity entity, string modifiedBy = null) where TEntity : class, IEntity
+        {
             entity.ModifiedDate = DateTime.UtcNow;
             entity.ModifiedBy = modifiedBy;
-            _context.Set<TEntity> ().Attach (entity);
-            _context.Entry (entity).State = EntityState.Modified;
+            if (_context.Entry(entity).State == EntityState.Detached)
+            {
+                _context.Update(entity);
+            }
             return entity;
         }
 
-        public virtual void Delete<TEntity> (object id, string deletedBy = null) where TEntity : class, IEntity {
-            TEntity entity = _context.Set<TEntity> ().Find (id);
-            Delete (entity, deletedBy);
+        public virtual IEnumerable<TEntity> UpdateRange<TEntity>(IEnumerable<TEntity> entities, string modifiedBy = null) where TEntity : class, IEntity
+        {
+            IList<TEntity> list = new List<TEntity>();
+            foreach (var entity in entities)
+            {
+                list.Add(Update(entity, modifiedBy));
+            }
+            return list;
         }
 
-        public virtual void Delete<TEntity> (TEntity entity, string deletedBy = null) where TEntity : class, IEntity {
-            var dbSet = _context.Set<TEntity> ();
+        public virtual void Delete<TEntity, Tin>(Tin id, string deletedBy = null) where TEntity : class, IEntity
+        {
+            TEntity entity = _context.Set<TEntity>().Find(id);
+            Delete(entity, deletedBy);
+        }
+
+        public virtual void DeleteRange<TEntity, Tin>(IEnumerable<Tin> ids, string deletedBy = null) where TEntity : class, IEntity
+        {
+            foreach (var id in ids)
+            {
+                Delete<TEntity, Tin>(id, deletedBy);
+            }
+        }
+
+        public virtual void Delete<TEntity>(TEntity entity, string deletedBy = null) where TEntity : class, IEntity
+        {
+            var dbSet = _context.Set<TEntity>();
             entity.Deleted = DateTime.UtcNow;
             entity.ModifiedBy = deletedBy;
-            if (_context.Entry (entity).State == EntityState.Modified) {
-                dbSet.Attach (entity);
+            if (_context.Entry(entity).State == EntityState.Detached)
+            {
+                dbSet.Update(entity);
             }
-            _context.Entry (entity).State = EntityState.Modified;
         }
 
-        public virtual Task SaveAsync () {
-            return _context.SaveChangesAsync ();
+        public virtual void DeleteRange<TEntity>(IEnumerable<TEntity> entities, string deletedBy = null) where TEntity : class, IEntity
+        {
+            foreach (var entity in entities)
+            {
+                Delete(entity, deletedBy);
+            }
+        }
+
+        public async Task SaveAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

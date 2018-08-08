@@ -9,7 +9,6 @@ namespace CP.Repositories.Interfaces
 {
     public interface IReadOnlyRepository
     {
-
         Task<IEnumerable<TEntity>> GetAllAsync<TEntity>(
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = null,
